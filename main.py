@@ -30,28 +30,15 @@ if use_mediapipe_solutions:
         min_tracking_confidence=0.5,
     )
 else:
-    try:
-        from mediapipe.tasks.python.vision import hand_landmarker as mp_hand_landmarker
-        from mediapipe.tasks.python.vision.core import image as mp_image
-    except Exception as exc:
-        raise RuntimeError(
-            "The installed MediaPipe package is the tasks-only release and does not "
-            "include the legacy mp.solutions API. Install a compatible MediaPipe "
-            "build with mp.solutions or provide the hand_landmarker.task model file."
-        ) from exc
+    from mediapipe.tasks.python.vision import hand_landmarker as mp_hand_landmarker
+    from mediapipe.tasks.python.vision.core import image as mp_image
 
     model_path = os.environ.get("HAND_LANDMARKER_MODEL_PATH", MODEL_FILE_NAME)
     if not os.path.exists(model_path):
         print(f"Downloading MediaPipe hand landmarker model to '{model_path}'...")
         urllib.request.urlretrieve(MODEL_DOWNLOAD_URL, model_path)
 
-    try:
-        landmarker = mp_hand_landmarker.HandLandmarker.create_from_model_path(model_path)
-    except Exception as exc:
-        raise RuntimeError(
-            "Failed to initialize MediaPipe HandLandmarker. Make sure the model file "
-            f"exists and is valid: {model_path}"
-        ) from exc
+    landmarker = mp_hand_landmarker.HandLandmarker.create_from_model_path(model_path)
 
 colors = [
     (0, 0, 255),
@@ -192,8 +179,8 @@ while running:
     if key == ord('q'):
         running = False
     elif key == ord('s'):
-        cv2.imwrite("Air_Sketch_drawing.png", canvas)
-        print("Drawing saved as 'Air_Sketch_drawing.png'")
+        cv2.imwrite("air_canvas_drawing.png", canvas)
+        print("Drawing saved as 'air_canvas_drawing.png'")
     elif key == ord('+'):
         line_thickness = min(line_thickness + 1, 10)
     elif key == ord('-'):
